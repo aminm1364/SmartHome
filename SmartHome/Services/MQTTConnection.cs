@@ -51,11 +51,12 @@ namespace SmartHome.Services
             await Channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Topic, durable: true);
         }
 
-        public async Task<string> SendMessageAsync(string message)
+        public async Task<Guid> SendMessageAsync(string message, bool isPrivate)
         {
             if (string.IsNullOrEmpty(message)) message = string.Empty;
             var props = new BasicProperties();
-            var status = new Message().ToJson(message, MessageDirectionType.Message, ReceiverQueueName);
+            var msg = new Message();
+            var status = msg.ToJson(message, MessageDirectionType.Message, ReceiverQueueName, isPrivate);
             var body = Encoding.UTF8.GetBytes(status);
 
             // Publish the message with a routing key
@@ -66,7 +67,7 @@ namespace SmartHome.Services
                 props,
                 body: body);
 
-            return message;
+            return msg.Id;
         }
 
         public async Task<AsyncEventingBasicConsumer> RunReceiver()
@@ -88,7 +89,7 @@ namespace SmartHome.Services
 
 
             return new AsyncEventingBasicConsumer(Channel);
-                       
+
         }
     }
 }

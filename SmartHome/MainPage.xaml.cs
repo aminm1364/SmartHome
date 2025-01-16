@@ -11,7 +11,7 @@ namespace SmartHome
         private Services.MQTTConnection Mqtt { get; set; }
         private AsyncEventingBasicConsumer Consumer { get; set; }
 
-        private string ReceiverQueueName = "relay_client_receiver_queue";
+        private string ReceiverQueueName = "relayQueue";
         private readonly string RoutingKeyControl = "relay.control";
         private readonly string RoutingKeyStatus = "relay.status";
 
@@ -33,7 +33,7 @@ namespace SmartHome
 
         private async void CheckCurrentStatus()
         {
-            await Mqtt.SendMessageAsync("STATUS");            
+            var messageId = await Mqtt.SendMessageAsync("STATUS", isPrivate: true);
         }
 
         private async Task InitConsumer()
@@ -46,21 +46,38 @@ namespace SmartHome
                     var jsonMessage = Encoding.UTF8.GetString(body);
                     var message = Message.Deserialize(jsonMessage);
 
-                    if (message.UserId == ReceiverQueueName || true) // To make sure, only the sender, gets the respond.
+                    // Ensure UI updates happen on the main thread
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        // Ensure UI updates happen on the main thread
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            //rawMessage.Text = ea.RoutingKey;
+                        //rawMessage.Text = ea.RoutingKey;
 
-                            if (message.DirectionType == MessageDirectionType.Callback)
+                        if (message.IsPrivate)
+                        {
+                            if (message.UserId == ReceiverQueueName)
                             {
-                                resultLabel.Text = message.Text;
                                 if (ea.RoutingKey == RoutingKeyStatus)
                                 {
                                     if (message.Status == "HIGH")
                                         relayOnButton.Text = "LOW";
-                                    
+                                    if (message.Status == "LOW")
+                                        relayOnButton.Text = "HIGH";
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (message.DirectionType == MessageDirectionType.Callback)
+                            {
+                                resultLabel.Text = message.Text;
+                                if (message.Token == "MCU2207|")
+                                {
+                                    return;
+                                }
+                                if (ea.RoutingKey == RoutingKeyStatus)
+                                {
+                                    if (message.Status == "HIGH")
+                                        relayOnButton.Text = "LOW";
                                     if (message.Status == "LOW")
                                         relayOnButton.Text = "HIGH";
 
@@ -70,10 +87,50 @@ namespace SmartHome
                                     resultLabel.Text = message.Text;
                                 }
                             }
+                        }
 
-                        });
-                    }
-                    
+                    });
+
+
+
+
+
+
+
+                    //MainThread.BeginInvokeOnMainThread(() =>
+                    //{
+                    //    resultLabel.Text = message.Text;
+
+                    //    if (message.UserId == ReceiverQueueName || true)
+                    //    {
+                    //        //rawMessage.Text = ea.RoutingKey;
+
+                    //        if (message.DirectionType == MessageDirectionType.Callback)
+                    //        {
+                    //            resultLabel.Text = message.Text;
+                    //            if (ea.RoutingKey == RoutingKeyStatus)
+                    //            {
+                    //                if (message.Status == "HIGH")
+                    //                    relayOnButton.Text = "HIGH";
+                    //                if (message.Status == "LOW")
+                    //                    relayOnButton.Text = "LOW";
+
+                    //            }
+                    //            else if (ea.RoutingKey == RoutingKeyControl)
+                    //            {
+                    //                resultLabel.Text = message.Text;
+                    //            }
+                    //        }
+                    //    }
+                    //});
+
+
+
+
+
+
+
+
 
                     await Task.CompletedTask;
                 }
@@ -87,18 +144,14 @@ namespace SmartHome
         }
         private async void OnRelayOnButtonClicked(object sender, EventArgs e)
         {
-            var changeTo = "";
-            if (relayOnButton.Text == "LOW")
+            if (relayOnButton.Text != "HIGH" && relayOnButton.Text != "LOW")
             {
-                changeTo = "HIGH";
-                relayOnButton.Text = "HIGH";
+                CheckCurrentStatus();
+                return;
             }
-            else if (relayOnButton.Text == "HIGH")
-            {
-                changeTo = "LOW";
-                relayOnButton.Text = "LOW";
-            }
-            var result = await Mqtt.SendMessageAsync(changeTo);
+
+            var result = await Mqtt.SendMessageAsync(relayOnButton.Text, isPrivate: false);
+            relayOnButton.Text = relayOnButton.Text == "HIGH" ? "LOW" : "HIGH";
 
             SemanticScreenReader.Announce(relayOnButton.Text);
         }

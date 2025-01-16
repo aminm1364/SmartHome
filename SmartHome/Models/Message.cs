@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Models
 {
-
     public class Message
     {
 
         public Guid Id { get; private set; }
         public MessageDirectionType DirectionType { get; private set; }
         public string UserId { get; private set; }
+
+        [JsonConverter(typeof(BoolAsZeroOneConverter))]
+        public bool IsPrivate{ get; private set; }
         public DateTime Timestamp { get; private set; }
         public string Token { get; private set; }
         public string Text { get; private set; }    // to be used to be shown to users
@@ -24,7 +26,7 @@ namespace SmartHome.Models
         public Message() { }
 
         [JsonConstructor]
-        public Message(Guid id, MessageDirectionType directionType, string userId, DateTime timestamp, string token, string text, string status)
+        public Message(Guid id, MessageDirectionType directionType, string userId, DateTime timestamp, string token, string text, string status, bool isPrivate)
         {
             Id = id;
             DirectionType = directionType;
@@ -33,9 +35,10 @@ namespace SmartHome.Models
             Token = token;
             Text = text;
             Status = status;
+            IsPrivate = isPrivate;
         }
 
-        public string ToJson(string text, MessageDirectionType directionType, string receiverQueueName)
+        public string ToJson(string text, MessageDirectionType directionType, string receiverQueueName, bool isPrivate)
         {
             Text = text;
             DirectionType = directionType;
@@ -43,6 +46,7 @@ namespace SmartHome.Models
             Id = Guid.NewGuid();
             Timestamp = DateTime.UtcNow;
             UserId = receiverQueueName;
+            IsPrivate = isPrivate;
             return JsonSerializer.Serialize(this);
         }
 
