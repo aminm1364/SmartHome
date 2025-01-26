@@ -1,37 +1,137 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartHome.MainPage">
+<ContentPage
+    x:Class="SmartHome.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
+        <VerticalStackLayout Padding="30,0" Spacing="25">
 
             <Label
-                x:Name="rawMessage"
-                Text="Raw received"
+                x:Name="ringingLabel"
                 Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2" />
+                Text="" />
 
-            <Label
-                x:Name="resultLabel"
-                Text="-"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="relay1OnButton"
+                    Margin="0,0,82,0"
+                    Clicked="OnRelay1OnButtonClicked"
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Set the relay1 to On"
+                    Text="Unknown" />
+                <Button
+                    x:Name="relay1StatusButton"
+                    Clicked="OnRelay1StatusButtonClicked"
+                    HorizontalOptions="EndAndExpand"
+                    SemanticProperties.Hint="Check R1"
+                    Text="Check 1" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="relay2OnButton"
+                    Margin="0,0,82,0"
+                    Clicked="OnRelay2OnButtonClicked"
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Set the relay2 to On"
+                    Text="Unknown" />
+                <Button
+                    x:Name="relay2StatusButton"
+                    Clicked="OnRelay2StatusButtonClicked"
+                    HorizontalOptions="EndAndExpand"
+                    SemanticProperties.Hint="Check R2"
+                    Text="Check 2" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="relay3OnButton"
+                    Margin="0,0,82,0"
+                    Clicked="OnRelay3OnButtonClicked"
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Set the relay3 to On"
+                    Text="Unknown" />
+                <Button
+                    x:Name="relay3StatusButton"
+                    Clicked="OnRelay3StatusButtonClicked"
+                    HorizontalOptions="End"
+                    SemanticProperties.Hint="Check R3"
+                    Text="Check 3" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="0" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="relay4OnButton"
+                    Margin="0,0,82,0"
+                    Clicked="OnRelay4OnButtonClicked"
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Set the relay4 to On"
+                    Text="Unknown" />
+                <Button
+                    x:Name="relay4StatusButton"
+                    Clicked="OnRelay4StatusButtonClicked"
+                    HorizontalOptions="EndAndExpand"
+                    SemanticProperties.Hint="Check R4"
+                    Text="Check 4" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Stepper
+                    x:Name="NumberStepper"
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    HorizontalOptions="StartAndExpand"
+                    Increment="1"
+                    Maximum="4"
+                    Minimum="1"
+                    ValueChanged="OnStepperValueChanged" />
+
+                <Label
+                    x:Name="ValueLabel"
+                    Grid.Column="1"
+                    FontSize="16"
+                    HorizontalOptions="Start"
+                    Text="Relay number: 1"
+                    VerticalTextAlignment="Center" />
+            </Grid>
 
             <Button
-                x:Name="relayOnButton"
-                Text="Unknown" 
+                x:Name="relayLHT2Button"
+                Clicked="OnRelayLHT2ButtonClicked"
+                HorizontalOptions="Fill"
+                IsEnabled="True"
                 SemanticProperties.Hint="Set the relay to On"
-                Clicked="OnRelayOnButtonClicked"
-                HorizontalOptions="Fill" />
+                Text="Door Opener" />
+
+            <Button
+                x:Name="deleteTocken"
+                Clicked="OndeleteTockenButtonClicked"
+                HorizontalOptions="Fill"
+                IsEnabled="True"
+                SemanticProperties.Hint="Set the relay to On"
+                Text="deleteTocken" />
+
         </VerticalStackLayout>
     </ScrollView>
 

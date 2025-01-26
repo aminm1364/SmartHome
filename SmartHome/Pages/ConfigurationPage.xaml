@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartHome.Pages.ConfigurationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:communityToolkit="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    Title="ConfigurationPage">
+
+    <StackLayout>
+        <ScrollView VerticalOptions="StartAndExpand">
+            <VerticalStackLayout Margin="20,20,20,1" Spacing="10">
+                <communityToolkit:Expander x:Name="expander1" ExpandedChanged="Expander1_ExpandedChanged">
+                    <communityToolkit:Expander.Header Animation="FadeAndMove" IsExpanded="False">
+                        <Border
+                            x:Name="border_expander1"
+                            Background="#F5F5F5"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="3">
+                            <Border.Stroke>
+                                <LinearGradientBrush EndPoint="0,1">
+                                    <GradientStop Offset="0.1" Color="Orange" />
+                                    <GradientStop Offset="1.0" Color="Brown" />
+                                </LinearGradientBrush>
+                            </Border.Stroke>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    x:Name="section1_label"
+                                    Grid.Column="0"
+                                    Padding="10"
+                                    BackgroundColor="White"
+                                    FontSize="15"
+                                    Text=""
+                                    TextColor="Black"
+                                    VerticalOptions="StartAndExpand"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Padding="0,0,0,0"
+                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    VerticalOptions="End"
+                                    VerticalTextAlignment="Center"
+                                    class="fa-solid fa-caret-down" />
+                            </Grid>
+
+                        </Border>
+                    </communityToolkit:Expander.Header>
+                    <StackLayout Padding="10" BackgroundColor="White">
+                        <!--  Protocol Dropdown  -->
+                        <Label FontSize="18" Text="Protocol" />
+                        <Picker
+                            x:Name="ProtocolPicker"
+                            SelectedIndex="0"
+                            SelectedIndexChanged="ProtocolPicker_SelectedIndexChanged">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>amqp</x:String>
+                                    <x:String>amqps</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+
+                        <!--  Host Input  -->
+                        <Label FontSize="18" Text="Host" />
+                        <Entry
+                            x:Name="HostEntry"
+                            Keyboard="Text"
+                            Placeholder="Enter host"
+                            TextChanged="ChangeDetected" />
+
+                        <!--  Host Port  -->
+                        <Label FontSize="18" Text="Port" />
+                        <Entry
+                            x:Name="PortEntry"
+                            Keyboard="Numeric"
+                            Placeholder="Enter port"
+                            TextChanged="ChangeDetected" />
+
+                        <!--  Virtual Host Input  -->
+                        <Label FontSize="18" Text="Virtual Host" />
+                        <Entry
+                            x:Name="VirtualHostEntry"
+                            Keyboard="Text"
+                            Placeholder="Enter virtual host"
+                            TextChanged="ChangeDetected" />
+
+                        <!--  Username Input  -->
+                        <Label FontSize="18" Text="Username" />
+                        <Entry
+                            x:Name="UsernameEntry"
+                            Keyboard="Text"
+                            Placeholder="Enter username"
+                            TextChanged="ChangeDetected" />
+
+                        <!--  Password Input  -->
+                        <Label FontSize="18" Text="Password" />
+                        <Entry
+                            x:Name="PasswordEntry"
+                            IsPassword="True"
+                            Keyboard="Text"
+                            Placeholder="Enter password"
+                            TextChanged="ChangeDetected" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="45" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <!--  SSL Toggle  -->
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontSize="18"
+                                HorizontalOptions="StartAndExpand"
+                                HorizontalTextAlignment="Center"
+                                Text="SSL"
+                                VerticalOptions="Center" />
+                            <Switch
+                                x:Name="SslSwitch"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                HorizontalOptions="End"
+                                Toggled="OnSslToggled"
+                                VerticalOptions="End" />
+                        </Grid>
+
+
+                        <!--  SSL Host Name Input (Initially Hidden)  -->
+                        <VerticalStackLayout x:Name="SslHostNameContainer" IsVisible="False">
+                            <Label FontSize="18" Text="SSL Host Name" />
+                            <Entry
+                                x:Name="SslHostNameEntry"
+                                Keyboard="Text"
+                                Placeholder="Enter SSL host name"
+                                TextChanged="ChangeDetected" />
+                        </VerticalStackLayout>
+                    </StackLayout>
+                </communityToolkit:Expander>
+
+                <communityToolkit:Expander x:Name="expander2" ExpandedChanged="Expander2_ExpandedChanged">
+                    <communityToolkit:Expander.Header
+                        Animation="FadeAndMove"
+                        CloseAnimation="FadeAndMove"
+                        IsExpanded="False">
+                        <Border
+                            x:Name="border_expander2"
+                            Background="#F5F5F5"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="3">
+                            <Border.Stroke>
+                                <LinearGradientBrush EndPoint="0,1">
+                                    <GradientStop Offset="0.1" Color="Orange" />
+                                    <GradientStop Offset="1.0" Color="Brown" />
+                                </LinearGradientBrush>
+                            </Border.Stroke>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    x:Name="section2_label"
+                                    Grid.Column="0"
+                                    Padding="10"
+                                    BackgroundColor="White"
+                                    FontSize="15"
+                                    Text=""
+                                    TextColor="Black"
+                                    VerticalOptions="StartAndExpand"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Padding="0,0,0,0"
+                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    VerticalOptions="End"
+                                    VerticalTextAlignment="Center"
+                                    class="fa-solid fa-caret-down" />
+                            </Grid>
+
+                        </Border>
+
+                    </communityToolkit:Expander.Header>
+                    <StackLayout Padding="10" BackgroundColor="#E6E6E6">
+
+                        <VerticalStackLayout Padding="0,0,0,0" Spacing="5">
+
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Relay1Checkbox" CheckedChanged="onCheckBoxRelay1CheckedChanged" />
+                                <Label
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="Relay1 - HIGH:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay1LabelHighEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="OFF"
+                                    TextChanged="Relay1LabelHighEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Margin="10,0,0,0"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="LOW:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay1LabelLowEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="ON"
+                                    TextChanged="Relay1LabelLowEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Relay2Checkbox" CheckedChanged="onCheckBoxRelay2CheckedChanged" />
+                                <Label
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="Relay2 - HIGH:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay2LabelHighEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="OFF"
+                                    TextChanged="Relay2LabelHighEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Margin="10,0,0,0"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="LOW:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay2LabelLowEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="ON"
+                                    TextChanged="Relay2LabelLowEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Relay3Checkbox" CheckedChanged="onCheckBoxRelay3CheckedChanged" />
+                                <Label
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="Relay3 - HIGH:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay3LabelHighEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="OFF"
+                                    TextChanged="Relay3LabelHighEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Margin="10,0,0,0"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="LOW:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay3LabelLowEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="ON"
+                                    TextChanged="Relay3LabelLowEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Relay4Checkbox" CheckedChanged="onCheckBoxRelay4CheckedChanged" />
+                                <Label
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="Relay4 - HIGH:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay4LabelHighEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="OFF"
+                                    TextChanged="Relay4LabelHighEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Margin="10,0,0,0"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="LOW:"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    x:Name="Relay4LabelLowEntry"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    Placeholder="ON"
+                                    TextChanged="Relay4LabelLowEntry_TextChanged"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+                    </StackLayout>
+
+                </communityToolkit:Expander>
+
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <VerticalStackLayout
+            Margin="0"
+            Padding="0,0,0,0"
+            VerticalOptions="End">
+            <!--  Buttons  -->
+            <HorizontalStackLayout
+                Padding="0,5,0,5"
+                HorizontalOptions="Center"
+                Spacing="10">
+                <Button
+                    x:Name="cancelButton"
+                    Clicked="OnCancelClicked"
+                    Text="Cancel" />
+                <Button
+                    x:Name="saveButton"
+                    Clicked="OnSaveClicked"
+                    IsEnabled="False"
+                    Text="Save" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </StackLayout>
+
+</ContentPage>
