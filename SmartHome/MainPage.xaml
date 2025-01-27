@@ -6,11 +6,60 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
+            <HorizontalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                <Grid Padding="0,15,0,0">
+                    <Grid>
+                        <!--  Button  -->
+                        <Button
+                            x:Name="LogButton"
+                            Padding="0"
+                            Clicked="OnLogButtonClicked"
+                            CornerRadius="20"
+                            FontSize="10"
+                            HeightRequest="5"
+                            HorizontalOptions="Center"
+                            IsEnabled="True"
+                            IsVisible="False"
+                            Text="X"
+                            VerticalOptions="Center"
+                            WidthRequest="5" />
 
-            <Label
-                x:Name="ringingLabel"
-                Style="{StaticResource SubHeadline}"
-                Text="" />
+                        <!--  Badge  -->
+                        <Border
+                            x:Name="LogBadgeNumber"
+                            Margin="0,-8,-8,0"
+                            BackgroundColor="Red"
+                            HeightRequest="21"
+                            HorizontalOptions="End"
+                            IsVisible="False"
+                            StrokeShape="RoundRectangle 14"
+                            StrokeThickness="0"
+                            VerticalOptions="Start"
+                            WidthRequest="20">
+
+                            <Label
+                                x:Name="LogbadgeNumberLabel"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="0"
+                                TextColor="White"
+                                VerticalTextAlignment="Center" />
+                        </Border>
+
+                    </Grid>
+                </Grid>
+                <Label
+                    x:Name="logLabel"
+                    Margin="15,15,0,0"
+                    FontSize="12"
+                    HorizontalOptions="StartAndExpand"
+                    HorizontalTextAlignment="Start"
+                    Style="{StaticResource SubHeadline}"
+                    Text=""
+                    VerticalOptions="Center"
+                    VerticalTextAlignment="Justify" />
+            </HorizontalStackLayout>
+
 
             <Grid>
                 <Grid.ColumnDefinitions>

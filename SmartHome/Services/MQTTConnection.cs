@@ -99,7 +99,7 @@ namespace SmartHome.Services
                                 queue: ReceiverQueueName,
                                 durable: true,
                                 exclusive: false,
-                                autoDelete: true);
+                                autoDelete: false);
 
             await Channel.QueueBindAsync(
                                 queue: ReceiverQueueName,

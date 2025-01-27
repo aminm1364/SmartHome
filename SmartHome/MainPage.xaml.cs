@@ -1,5 +1,8 @@
-﻿using RabbitMQ.Client;
+﻿using CommunityToolkit.Maui.ApplicationModel;
+using Plugin.LocalNotification;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SmartHome.Db;
 using SmartHome.Enums;
 using SmartHome.Interfaces;
 using SmartHome.Models;
@@ -11,16 +14,23 @@ namespace SmartHome
 {
     public partial class MainPage : ContentPage
     {
+        private readonly IBadge badge;
+
+        SmartRelayDatabase _database;
+        private IEnumerable<Log> _logs { get; set; }
         private IMQTTConnection _mQTT { get; set; }
         private AsyncEventingBasicConsumer Consumer { get; set; }
-        
+
         private IServerConfiguration _Configuration;
         private static string DOOR_OPENER_COMMAND(int relayNumber) => $"Relay_{relayNumber}_LHT_1";
         private static string DOOR_BUTTON_DEFAULT_TEXT(int relayNumber) => $"Open the door {relayNumber}";
         private static string DOOR_BUTTON_IS_OPEN_TEXT(int relayNumber) => $"Door {relayNumber} is open...";
-        public MainPage(IMQTTConnection mQTTConnection)
+        public MainPage(IMQTTConnection mQTTConnection, IBadge badge, SmartRelayDatabase database)
         {
             InitializeComponent();
+            this.badge = badge;
+            this._database = database;
+            LoadDatabaseLogs();
             _mQTT = mQTTConnection;
             _mQTT.RetrieveConfigurations(() =>
             {
@@ -34,6 +44,34 @@ namespace SmartHome
                     CheckCurrentStatus();
                 });
             });
+        }
+
+        private async void LoadDatabaseLogs()
+        {
+            this._logs = await _database.GetLogsAsync();
+            LogButton.IsVisible = this._logs.Count() > 0;
+
+            var unseenLogs = _logs.Where(x => x.IsSeen);
+            if (unseenLogs == null)
+            {
+                return;
+            }
+
+            if (unseenLogs?.Count() == 1 && !unseenLogs.Last().IsSeen)
+            {
+                LogBadgeNumber.IsVisible = false;
+
+                var log = unseenLogs.Last();
+                logLabel.Text = $"{log.Timestamp.ToLocalTime().ToString("yy.MM.dd-HH:mm:ss")} - {log.Text}";
+                log.IsSeen = true;
+                await _database.SaveLogAsync(log);
+                return;
+            }
+            if (unseenLogs?.Count() > 0)
+            {
+                LogBadgeNumber.IsVisible = true;
+                LogbadgeNumberLabel.Text = unseenLogs.Count() <= 99 ? unseenLogs.Count().ToString() : "99+";
+            }
         }
 
         private void SetTheMainPage()
@@ -111,7 +149,7 @@ namespace SmartHome
                     if (message == null) throw new Exception("Error: message couldn't be deserialized!");
 
                     // Ensure UI updates happen on the main thread
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         //rawMessage.Text = ea.RoutingKey;
 
@@ -164,9 +202,13 @@ namespace SmartHome
 
                                 if (message.Token == "MCU2207|" && message.Status == "RING")
                                 {
+                                    string ringMessageText = message.Text;
+                                    DateTime timestamp = DateTime.Now;
+                                    var newLog = new Log() { Text = message.Text, Timestamp = timestamp.ToUniversalTime() };
+                                    await _database.SaveLogAsync(newLog);
                                     // The button / ring on the MCU has been pressed / triggered.
-                                    ringingLabel.Text = $"[{DateTime.Now.ToString("yy.MM.dd-HH:mm:ss")}]-{message.Text}";
-
+                                    logLabel.Text = $"[{timestamp.ToString("yy.MM.dd-HH:mm:ss")}]-{message.Text}";
+                                    //SendRingingNotification();
                                     // TODO: The rest of the code goes here
                                     return;
                                 }
@@ -218,7 +260,7 @@ namespace SmartHome
                                 }
                                 else if (ea.RoutingKey == _mQTT.RoutingKeyControl)
                                 {
-                                    resultLabel.Text = message.Text;
+                                    logLabel.Text = message.Text;
                                 }
                             }
                         }
@@ -332,6 +374,34 @@ namespace SmartHome
             AssignRelayConfigurationToParameters();
         }
 
-    }
+        public void SetCount(uint value)
+        {
+            badge.SetCount(value);
+        }
 
+
+        private async void OnLogButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new LogsPage(_database));
+        }
+
+        //private void SendRingingNotification()
+        //{
+        //    string now = DateTime.Now.ToString("yy.MM.dd - HH:mm:ss");
+        //    var notification = new NotificationRequest
+        //    {
+        //        NotificationId = 100,
+        //        Title = "Doorbell ringing!",
+        //        Description = $"Someone is ringing at your apartment door at '{now}'",
+        //        ReturningData = "Dummy data", // Returning data when tapped on notification.
+        //        //Schedule =
+        //        //{
+        //        //    NotifyTime = DateTime.Now.AddSeconds(30) // This is Used for Scheduling local notifications; if not specified, the notification will show immediately.
+        //        //}
+        //    };
+
+        //    App.ShowLocalNotification(notification);
+        //}
+
+    }
 }

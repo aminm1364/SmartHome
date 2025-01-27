@@ -12,6 +12,7 @@ namespace SmartHome
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             Routing.RegisterRoute(nameof(ConfigurationPage), typeof(ConfigurationPage));
+            Routing.RegisterRoute(nameof(LogsPage), typeof(LogsPage));
             //Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
         }
 

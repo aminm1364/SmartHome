@@ -1,4 +1,5 @@
-﻿using SmartHome.Pages;
+﻿using Plugin.LocalNotification;
+using SmartHome.Pages;
 
 namespace SmartHome
 {
@@ -26,5 +27,18 @@ namespace SmartHome
             // Check for a valid authentication token
             return SecureStorage.Default.GetAsync("AuthToken").Result != null;
         }
+
+        //public async static void ShowLocalNotification(NotificationRequest notification)
+        //{
+        //    if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+        //    {
+        //        await LocalNotificationCenter.Current.RequestNotificationPermission();
+        //    }
+
+        //    if (notification == null)
+        //        return;
+            
+        //    await LocalNotificationCenter.Current.Show(notification);
+        //}
     }
 }

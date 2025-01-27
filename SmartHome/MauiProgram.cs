@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Maui;
-using Microsoft.Extensions.DependencyInjection;
+using CommunityToolkit.Maui.ApplicationModel;
 using Microsoft.Extensions.Logging;
+using SmartHome.Db;
 using SmartHome.Interfaces;
 using SmartHome.Models;
 using SmartHome.Services;
+using Plugin.LocalNotification;
 
 namespace SmartHome
 {
@@ -16,6 +18,7 @@ namespace SmartHome
             builder
 
                 .UseMauiApp<App>()
+                //.UseLocalNotification()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
@@ -23,8 +26,11 @@ namespace SmartHome
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 })
                 .Services
+                .AddSingleton<SmartRelayDatabase>()
                 .AddScoped<IServerConfiguration, ServerConfiguration>()
-                .AddScoped<IMQTTConnection, MQTTConnection>();
+                .AddScoped<IMQTTConnection, MQTTConnection>()
+                .AddSingleton<IBadge>(Badge.Default)
+                ;
 
 #if DEBUG
             builder.Logging.AddDebug();
